@@ -61,36 +61,8 @@ function locNum(num) {
 }
 
 
-function toggleTheme() {
-    const html = document.documentElement;
-    const icon = document.getElementById('theme-icon');
-    if (html.classList.contains('dark')) {
-        html.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
-        if (icon) icon.className = 'fas fa-sun text-xl';
-    } else {
-        html.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
-        if (icon) icon.className = 'fas fa-moon text-xl';
-    }
-}
-
-function initTheme() {
-    const theme = localStorage.getItem('theme') || 'dark';
-    const html = document.documentElement;
-    const icon = document.getElementById('theme-icon');
-    if (theme === 'dark') {
-        html.classList.add('dark');
-        if (icon) icon.className = 'fas fa-moon text-xl';
-    } else {
-        html.classList.remove('dark');
-        if (icon) icon.className = 'fas fa-sun text-xl';
-    }
-}
-
 function init() {
-    initTheme();
-    applyLang(currentLang);
+        applyLang(currentLang);
     
     updateBadges();
     renderView();
@@ -509,7 +481,8 @@ function editProduct(id) {
     form.nameAr.value = p.nameAr;
     form.price.value = p.price;
     form.oldPrice.value = p.oldPrice || '';
-    form.desc.value = p.description || '';
+    form.descEn.value = p.descriptionEn || '';
+      form.descAr.value = p.descriptionAr || '';
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -529,7 +502,8 @@ function saveProduct(e) {
             productsData[idx].nameAr = form.nameAr.value;
             productsData[idx].price = parseFloat(form.price.value);
             productsData[idx].oldPrice = parseFloat(form.oldPrice.value);
-            productsData[idx].description = form.desc.value;
+            productsData[idx].descriptionEn = form.descEn.value;
+              productsData[idx].descriptionAr = form.descAr.value;
             
             if (files.length > 0) {
                 productsData[idx].image = URL.createObjectURL(files[0]);
@@ -552,7 +526,8 @@ function saveProduct(e) {
             nameEn: form.nameEn.value,
             price: parseFloat(form.price.value),
             oldPrice: parseFloat(form.oldPrice.value),
-            description: form.desc.value,
+            descriptionEn: form.descEn.value,
+              descriptionAr: form.descAr.value,
             image: mainImg,
             detailsImage: files.length > 1 ? URL.createObjectURL(files[1]) : mainImg
         };

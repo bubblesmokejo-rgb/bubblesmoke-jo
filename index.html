@@ -37,32 +37,30 @@
 </head>
 <body class="bg-gray-100 dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors min-h-screen flex flex-col relative overflow-x-hidden">
     
+    <div class="hidden bg-white dark:bg-[#111111]/90 dark:bg-[#111111] dark:bg-[#0a0a0a] dark:bg-[#121212] dark:bg-white/5 dark:bg-[#1a1a1a] text-gray-900 dark:text-white dark:text-gray-100 dark:text-gray-300 dark:text-gray-400 bg-gray-50 dark:bg-darkbg text-yellow-600 dark:text-luxury border-gray-200 dark:border-white/5 dark:border-white/10 dark:hover:bg-white/10 dark:border-none"></div>
     <!-- Interactive Canvas Background -->
     <canvas id="bg-canvas" class="fixed inset-0 z-[-1]"></canvas>
 
     <!-- Header -->
-    <header dir="ltr" class="bg-white/90 dark:bg-[#050505]/90 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5 transition-colors h-20">
+    <header dir="ltr" class="bg-[#050505]/90 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5 transition-colors h-20">
         <div class="max-w-6xl mx-auto px-4 h-full relative w-full">
             <!-- Logo pinned to the Left permanently -->
             <div class="absolute top-1/2 -translate-y-1/2 flex items-center gap-3 cursor-pointer" onclick="handleLogoClick()" style="left: 1rem !important; right: auto !important;">
-                <span class="text-[28px] font-bold text-yellow-600 dark:text-luxury tracking-wide lowercase" style="font-family: 'Times New Roman', Times, serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">bubblesmoke jo</span>
+                <span class="text-xl sm:text-[28px] font-bold text-yellow-600 tracking-wide lowercase" style="font-family: 'Times New Roman', Times, serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">bubblesmoke jo</span>
             </div>
             
-            <!-- Icons pinned to the Right permanently -->
-            <div class="absolute top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-4 text-gray-900 dark:text-white" style="right: 1rem !important; left: auto !important;">
-                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
-                    <i id="theme-icon" class="fas fa-moon text-xl"></i>
-                </button>
-                <button onclick="toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors font-bold text-sm" id="lang-btn">
+            <!-- Exactly 3 Icons pinned to the Right permanently -->
+            <div class="absolute top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-4 text-white" style="right: 1rem !important; left: auto !important;">
+                <button onclick="toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors font-bold text-sm" id="lang-btn">
                     EN
                 </button>
-                <button onclick="navigate('liked')" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors relative">
+                <button onclick="navigate('liked')" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors relative">
                     <i class="far fa-heart text-xl"></i>
                     <span id="liked-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
-                <button onclick="navigate('cart')" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors relative">
+                <button onclick="navigate('cart')" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors relative">
                     <i class="fas fa-shopping-cart text-xl"></i>
-                    <span id="cart-count" class="absolute -top-1 -right-1 bg-yellow-600 dark:bg-luxury text-white dark:text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-yellow-600 text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
             </div>
         </div>
@@ -79,7 +77,7 @@
 
     <!-- Product Card Template -->
     <template id="tpl-product">
-        <div dir="rtl" class="bg-[#111111]/90 rounded-3xl p-4 sm:p-5 shadow-xl border border-white/5 cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl group flex flex-col h-full backdrop-blur-sm">
+        <div dir="rtl" class="bg-white dark:bg-[#111111]/90 rounded-3xl p-4 sm:p-5 shadow-xl border border-white/5 cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl group flex flex-col h-full backdrop-blur-sm">
             <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-white flex items-center justify-center p-4 mb-4 shadow-sm border border-gray-100 dark:border-none">
                 <img src="" alt="" class="product-img max-w-full max-h-full object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-110">
             </div>
@@ -105,7 +103,7 @@
                         <span class="tracking-wide font-bold"></span>
                     </button>
                     
-                    <button class="w-12 h-12 mt-auto rounded-2xl border border-gray-200 dark:border-white/10 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 active:scale-95 like-btn mx-auto self-end mb-1">
+                    <button class="w-12 h-12 mt-auto rounded-2xl border border-gray-200 dark:border-white/10 flex items-center justify-center hover:bg-black/5 dark:hover:bg-gray-50 dark:bg-white/5 transition-all duration-300 active:scale-95 like-btn mx-auto self-end mb-1">
                         <i class="far fa-heart heart-icon text-xl text-gray-400"></i>
                     </button>
                 </div>
@@ -122,14 +120,14 @@
             <h2 class="text-3xl font-bold" data-i18n="cart">السلة</h2>
         </div>
         
-        <div id="empty-cart" class="hidden text-center py-20 bg-white/50 dark:bg-[#111111]/50 rounded-3xl border border-white/5 backdrop-blur-sm">
+        <div id="empty-cart" class="hidden text-center py-20 bg-gray-50 dark:bg-white/50 dark:bg-[#111111]/50 rounded-3xl border border-white/5 backdrop-blur-sm">
             <i class="fas fa-shopping-cart text-6xl text-gray-400 dark:text-gray-600 mb-4"></i>
             <h3 class="text-xl text-gray-500 dark:text-gray-400" data-i18n="emptyCart">سلة المشتريات فارغة.</h3>
         </div>
         
         <div id="cart-container" class="flex flex-col gap-4"></div>
         
-        <div id="cart-summary" class="hidden mt-8 bg-white/90 dark:bg-[#111111]/90 rounded-3xl p-6 border border-white/5 shadow-xl backdrop-blur-sm">
+        <div id="cart-summary" class="hidden mt-8 bg-white/90 dark:bg-white dark:bg-[#111111]/90 rounded-3xl p-6 border border-white/5 shadow-xl backdrop-blur-sm">
             <div class="flex justify-between items-center mb-6">
                 <span class="text-xl font-bold" data-i18n="total">الإجمالي</span>
                 <span id="cart-total" class="text-2xl font-bold text-yellow-600 dark:text-luxury"></span>
@@ -143,7 +141,7 @@
 
     <!-- Cart Item Template -->
     <template id="tpl-cart-item">
-        <div dir="rtl" class="bg-[#111111]/90 rounded-3xl p-4 sm:p-5 flex gap-4 items-center shadow-md border border-white/5 backdrop-blur-sm">
+        <div dir="rtl" class="bg-white dark:bg-[#111111]/90 rounded-3xl p-4 sm:p-5 flex gap-4 items-center shadow-md border border-white/5 backdrop-blur-sm">
             <div class="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shrink-0 cursor-pointer cart-item-img-container shadow-sm border border-gray-100 dark:border-none">
                 <img src="" alt="" class="w-full h-full object-contain drop-shadow-md cart-item-img">
             </div>
@@ -176,7 +174,7 @@
             </button>
             <h2 class="text-3xl font-bold" data-i18n="likedProducts">المنتجات المفضلة</h2>
         </div>
-        <div id="empty-liked" class="hidden text-center py-20 bg-white/50 dark:bg-[#111111]/50 rounded-3xl border border-white/5 backdrop-blur-sm">
+        <div id="empty-liked" class="hidden text-center py-20 bg-gray-50 dark:bg-white/50 dark:bg-[#111111]/50 rounded-3xl border border-white/5 backdrop-blur-sm">
             <i class="far fa-heart text-6xl text-gray-400 dark:text-gray-600 mb-4"></i>
             <h3 class="text-xl text-gray-500 dark:text-gray-400" data-i18n="noLiked">لا توجد منتجات مفضلة بعد.</h3>
         </div>
@@ -216,7 +214,8 @@
                             <input type="number" step="0.01" name="price" placeholder="Price (JD)" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury">
                             <input type="number" step="0.01" name="oldPrice" placeholder="Old Price (JD)" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury">
                         </div>
-                        <textarea name="desc" placeholder="Product Description" required rows="4" class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury"></textarea>
+                        <textarea name="descEn" placeholder="Product Description (English)" required rows="4" class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury"></textarea>
+                        <textarea name="descAr" placeholder="Product Description (Arabic)" required rows="4" class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury" dir="rtl"></textarea>
                         
                         <div class="border-2 border-dashed border-gray-300 dark:border-white/20 rounded-xl p-6 text-center hover:border-yellow-600 dark:hover:border-luxury transition-colors">
                             <label class="cursor-pointer flex flex-col items-center justify-center">
@@ -244,7 +243,7 @@
     <template id="tpl-modal">
         <div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
-            <div dir="rtl" class="relative bg-[#0a0a0a] w-full max-w-4xl max-h-[95vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-white/10">
+            <div dir="rtl" class="relative bg-white dark:bg-[#0a0a0a] w-full max-w-4xl max-h-[95vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-white/10">
                 <button onclick="closeModal()" class="absolute top-4 right-4 rtl:right-auto rtl:left-4 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors z-10 backdrop-blur-md">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -259,7 +258,7 @@
                         </div>
                     </div>
                     
-                    <div class="p-6 sm:p-8 bg-[#121212]">
+                    <div class="p-6 sm:p-8 bg-gray-50 dark:bg-[#121212]">
                         <div class="flex justify-between items-start mb-6">
                             <h3 id="modal-title" class="text-3xl font-bold text-white leading-tight"></h3>
                             <div class="flex flex-col items-end ml-4 rtl:mr-4 rtl:ml-0 shrink-0">
@@ -270,7 +269,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-white/5 p-6 rounded-2xl border border-white/5 mb-8 shadow-sm">
+                        <div class="bg-gray-50 dark:bg-white/5 p-6 rounded-2xl border border-white/5 mb-8 shadow-sm">
                             <div id="modal-desc" class="text-gray-300 whitespace-pre-line text-[15px] sm:text-base leading-relaxed"></div>
                         </div>
                         
