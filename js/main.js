@@ -470,6 +470,22 @@ function renderAdminProducts() {
     });
 }
 
+
+function previewAdminImages(input) {
+    const preview = document.getElementById('admin-image-preview');
+    if (!preview) return;
+    preview.innerHTML = '';
+    if (input.files && input.files.length > 0) {
+        Array.from(input.files).forEach(file => {
+            const url = URL.createObjectURL(file);
+            preview.innerHTML += `<img src="${url}" class="w-16 h-16 object-contain bg-white rounded-lg border border-gray-200">`;
+        });
+        preview.classList.remove('hidden');
+    } else {
+        preview.classList.add('hidden');
+    }
+}
+
 function editProduct(id) {
     const p = productsData.find(prod => prod.id === id);
     if (!p) return;
