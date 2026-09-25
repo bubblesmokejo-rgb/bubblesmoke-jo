@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bubblesmoke jo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        luxury: '#D4AF37',
+                        darkbg: '#050505',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #777; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-darkbg text-gray-900 dark:text-gray-100 transition-colors min-h-screen flex flex-col relative overflow-x-hidden">
+    
+    <!-- Interactive Canvas Background -->
+    <canvas id="bg-canvas" class="fixed inset-0 z-[-1]"></canvas>
+
+    <!-- Header -->
+    <header dir="ltr" class="bg-white/90 dark:bg-[#050505]/90 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5 transition-colors h-20">
+        <div class="max-w-6xl mx-auto px-4 h-full relative w-full">
+            <!-- Logo pinned to the Left permanently -->
+            <div class="absolute top-1/2 -translate-y-1/2 flex items-center gap-3 cursor-pointer" onclick="handleLogoClick()" style="left: 1rem !important; right: auto !important;">
+                <span class="text-[28px] font-bold text-yellow-600 dark:text-luxury tracking-wide lowercase" style="font-family: 'Times New Roman', Times, serif; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">bubblesmoke jo</span>
+            </div>
+            
+            <!-- Icons pinned to the Right permanently -->
+            <div class="absolute top-1/2 -translate-y-1/2 flex items-center gap-2 sm:gap-4 text-gray-900 dark:text-white" style="right: 1rem !important; left: auto !important;">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                    <i id="theme-icon" class="fas fa-moon text-xl"></i>
+                </button>
+                <button onclick="toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors font-bold text-sm" id="lang-btn">
+                    EN
+                </button>
+                <button onclick="navigate('liked')" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors relative">
+                    <i class="far fa-heart text-xl"></i>
+                    <span id="liked-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+                <button onclick="navigate('cart')" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors relative">
+                    <i class="fas fa-shopping-cart text-xl"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-yellow-600 dark:bg-luxury text-white dark:text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1 w-full max-w-6xl mx-auto p-4 sm:p-6 mb-20"></main>
+
+    <!-- Home Template -->
+    <template id="tpl-home">
+        <h2 class="text-3xl font-bold mb-8 text-center text-white" data-i18n="ourPackages">البكجات</h2>
+        <div id="products-container" class="flex flex-col gap-6 max-w-2xl mx-auto"></div>
+    </template>
+
+    <!-- Product Card Template -->
+    <template id="tpl-product">
+        <div dir="rtl" class="bg-[#111111]/90 rounded-3xl p-4 sm:p-5 shadow-xl border border-white/5 cursor-pointer transform transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl group flex flex-col h-full backdrop-blur-sm">
+            <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-white flex items-center justify-center p-4 mb-4 shadow-sm border border-gray-100 dark:border-none">
+                <img src="" alt="" class="product-img max-w-full max-h-full object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-110">
+            </div>
+            
+            <div class="flex-1 flex flex-col mt-2">
+                <div class="grid grid-cols-[1fr_auto] grid-rows-[1fr_auto] gap-x-4 w-full h-full">
+                    
+                    <!-- Top Row: Centered vertically in available space -->
+                    <div class="flex items-center justify-center self-center h-full py-4">
+                        <h3 class="text-2xl font-bold text-white product-name text-center leading-tight"></h3>
+                    </div>
+                    
+                    <div class="flex flex-col items-center justify-center self-center h-full py-4">
+                        <span class="text-xl font-bold text-yellow-600 dark:text-luxury product-price whitespace-nowrap"></span>
+                        <div class="text-[12px] font-bold text-center flex items-center gap-1 text-red-500 line-through decoration-red-600 decoration-[1.5px] product-old-price-container hidden whitespace-nowrap">
+                            <span class="text-yellow-500 instead-of-text"></span>
+                            <span class="product-old-price"></span>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Row: Buttons anchored to the bottom -->
+                    <button class="w-full py-4 mt-auto rounded-2xl font-bold transition-all duration-300 active:scale-95 add-to-cart-btn shadow-lg flex items-center justify-center text-white text-lg self-end bg-green-600">
+                        <span class="tracking-wide font-bold"></span>
+                    </button>
+                    
+                    <button class="w-12 h-12 mt-auto rounded-2xl border border-gray-200 dark:border-white/10 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 active:scale-95 like-btn mx-auto self-end mb-1">
+                        <i class="far fa-heart heart-icon text-xl text-gray-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Cart View Template -->
+    <template id="tpl-cart">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="navigate('home')" class="w-10 h-10 rounded-full bg-white dark:bg-[#111111] border border-white/5 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <i id="back-icon-cart" class="fas fa-chevron-right text-xl"></i>
+            </button>
+            <h2 class="text-3xl font-bold" data-i18n="cart">السلة</h2>
+        </div>
+        
+        <div id="empty-cart" class="hidden text-center py-20 bg-white/50 dark:bg-[#111111]/50 rounded-3xl border border-white/5 backdrop-blur-sm">
+            <i class="fas fa-shopping-cart text-6xl text-gray-400 dark:text-gray-600 mb-4"></i>
+            <h3 class="text-xl text-gray-500 dark:text-gray-400" data-i18n="emptyCart">سلة المشتريات فارغة.</h3>
+        </div>
+        
+        <div id="cart-container" class="flex flex-col gap-4"></div>
+        
+        <div id="cart-summary" class="hidden mt-8 bg-white/90 dark:bg-[#111111]/90 rounded-3xl p-6 border border-white/5 shadow-xl backdrop-blur-sm">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-xl font-bold" data-i18n="total">الإجمالي</span>
+                <span id="cart-total" class="text-2xl font-bold text-yellow-600 dark:text-luxury"></span>
+            </div>
+            <button onclick="checkoutWhatsApp()" class="w-full py-4 rounded-2xl font-bold bg-[#25D366] text-white hover:bg-[#1EBE5D] transition-colors shadow-lg shadow-[#25D366]/20 flex items-center justify-center gap-3 text-lg">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                <span data-i18n="checkoutWhatsApp">تأكيد الطلب عبر واتساب</span>
+            </button>
+        </div>
+    </template>
+
+    <!-- Cart Item Template -->
+    <template id="tpl-cart-item">
+        <div dir="rtl" class="bg-[#111111]/90 rounded-3xl p-4 sm:p-5 flex gap-4 items-center shadow-md border border-white/5 backdrop-blur-sm">
+            <div class="w-20 h-20 bg-white rounded-xl flex items-center justify-center p-2 shrink-0 cursor-pointer cart-item-img-container shadow-sm border border-gray-100 dark:border-none">
+                <img src="" alt="" class="w-full h-full object-contain drop-shadow-md cart-item-img">
+            </div>
+            <div class="flex-1 cursor-pointer cart-item-info">
+                <h4 class="font-bold text-lg text-white cart-item-name line-clamp-1"></h4>
+                <div class="text-yellow-600 dark:text-luxury font-bold cart-item-price mt-1"></div>
+            </div>
+            
+            <div class="flex items-center gap-2 bg-black/50 rounded-xl p-1 shrink-0">
+                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors qty-minus">
+                    <i class="fas fa-minus text-xs"></i>
+                </button>
+                <span class="font-bold w-4 text-center cart-item-qty text-gray-900 dark:text-white">1</span>
+                <button class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors qty-plus">
+                    <i class="fas fa-plus text-xs"></i>
+                </button>
+            </div>
+
+            <button class="text-gray-400 hover:text-red-500 p-2 sm:p-3 rounded-full hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors remove-cart-btn active:scale-95 shrink-0 ml-2 rtl:mr-2 rtl:ml-0">
+                <i class="fas fa-trash text-lg"></i>
+            </button>
+        </div>
+    </template>
+
+    <!-- Liked View Template -->
+    <template id="tpl-liked">
+        <div class="flex items-center gap-4 mb-8">
+            <button onclick="navigate('home')" class="w-10 h-10 rounded-full bg-white dark:bg-[#111111] border border-white/5 flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                <i id="back-icon-liked" class="fas fa-chevron-right text-xl"></i>
+            </button>
+            <h2 class="text-3xl font-bold" data-i18n="likedProducts">المنتجات المفضلة</h2>
+        </div>
+        <div id="empty-liked" class="hidden text-center py-20 bg-white/50 dark:bg-[#111111]/50 rounded-3xl border border-white/5 backdrop-blur-sm">
+            <i class="far fa-heart text-6xl text-gray-400 dark:text-gray-600 mb-4"></i>
+            <h3 class="text-xl text-gray-500 dark:text-gray-400" data-i18n="noLiked">لا توجد منتجات مفضلة بعد.</h3>
+        </div>
+        <div id="liked-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </template>
+
+    <!-- Admin Templates -->
+    <template id="tpl-admin-login">
+        <div class="max-w-md mx-auto mt-20 p-8 bg-white dark:bg-[#111111] rounded-3xl border border-white/5 shadow-2xl relative z-10">
+            <h2 class="text-3xl font-bold text-yellow-600 dark:text-luxury mb-8 text-center lowercase tracking-wide" style="font-family: 'Times New Roman', Times, serif;">bubblesmoke jo</h2>
+            <form onsubmit="loginAdmin(event)" class="flex flex-col gap-5">
+                <input type="text" id="admin-user" placeholder="Username" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-4 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury transition-colors">
+                <input type="password" id="admin-pass" placeholder="Password" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-4 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury transition-colors">
+                <button type="submit" class="w-full py-4 rounded-xl font-bold bg-yellow-600 dark:bg-luxury text-white dark:text-black hover:bg-yellow-500 dark:hover:bg-yellow-400 transition-colors mt-2">Login to Portal</button>
+            </form>
+        </div>
+    </template>
+
+    <template id="tpl-admin-dashboard">
+        <div class="max-w-4xl mx-auto mt-10 p-8 bg-white dark:bg-[#111111] rounded-3xl border border-white/5 shadow-2xl relative z-10 mb-20">
+            <div class="flex justify-between items-center mb-8 border-b border-gray-200 dark:border-white/10 pb-4">
+                <h2 class="text-3xl font-bold text-yellow-600 dark:text-luxury">Admin Portal</h2>
+                <button onclick="navigate('home')" class="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <i class="fas fa-sign-out-alt text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">Add/Edit Product</h3>
+                    <form onsubmit="saveProduct(event)" class="flex flex-col gap-4" id="admin-product-form">
+                        <input type="hidden" id="edit-id" value="">
+
+                        <input type="text" name="nameEn" placeholder="Product Name (English)" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury">
+                        <input type="text" name="nameAr" placeholder="Product Name (Arabic)" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury" dir="rtl">
+                        <div class="flex gap-4">
+                            <input type="number" step="0.01" name="price" placeholder="Price (JD)" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury">
+                            <input type="number" step="0.01" name="oldPrice" placeholder="Old Price (JD)" required class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury">
+                        </div>
+                        <textarea name="desc" placeholder="Product Description" required rows="4" class="w-full bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white focus:outline-none focus:border-yellow-600 dark:focus:border-luxury"></textarea>
+                        
+                        <div class="border-2 border-dashed border-gray-300 dark:border-white/20 rounded-xl p-6 text-center hover:border-yellow-600 dark:hover:border-luxury transition-colors">
+                            <label class="cursor-pointer flex flex-col items-center justify-center">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-yellow-600 dark:text-luxury mb-2"></i>
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Upload Image Gallery</span>
+                                <input type="file" id="admin-images" multiple accept="image/*" class="hidden">
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="w-full py-4 rounded-xl font-bold bg-green-600 text-white hover:bg-green-500 transition-colors mt-2">Save Product</button>
+                    </form>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-6 text-gray-900 dark:text-white">Current Products</h3>
+                    <div id="admin-product-list" class="flex flex-col gap-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Modal Root -->
+    <div id="modal-root"></div>
+    
+    <template id="tpl-modal">
+        <div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
+            <div dir="rtl" class="relative bg-[#0a0a0a] w-full max-w-4xl max-h-[95vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-white/10">
+                <button onclick="closeModal()" class="absolute top-4 right-4 rtl:right-auto rtl:left-4 w-10 h-10 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors z-10 backdrop-blur-md">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                
+                <div class="overflow-y-auto hide-scrollbar flex-1">
+                    <div class="flex flex-col p-4 pt-16 border-b border-white/5">
+                        <div class="w-full aspect-[4/3] relative bg-white rounded-2xl flex items-center justify-center p-4 overflow-hidden group cursor-zoom-in border border-gray-100 dark:border-none shadow-sm" id="modal-img-main-container" onmousemove="zoomImage(event, this)">
+                            <img id="modal-img-main" src="" class="max-w-full max-h-full object-contain transition-transform duration-200">
+                        </div>
+                        
+                        <div class="flex flex-row gap-3 mt-4 overflow-x-auto pb-2" id="modal-thumbnails-container">
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 sm:p-8 bg-[#121212]">
+                        <div class="flex justify-between items-start mb-6">
+                            <h3 id="modal-title" class="text-3xl font-bold text-white leading-tight"></h3>
+                            <div class="flex flex-col items-end ml-4 rtl:mr-4 rtl:ml-0 shrink-0">
+                                <div id="modal-price" class="text-yellow-600 dark:text-luxury text-2xl font-bold whitespace-nowrap"></div>
+                                <div class="text-sm font-bold mt-1 hidden text-right flex items-center gap-1 text-red-500 line-through decoration-red-600 decoration-[1.5px] whitespace-nowrap" id="modal-old-price-container">
+                                    <span id="modal-instead-of" class="text-yellow-500"></span>
+                                    <span id="modal-old-price"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/5 mb-8 shadow-sm">
+                            <div id="modal-desc" class="text-gray-300 whitespace-pre-line text-[15px] sm:text-base leading-relaxed"></div>
+                        </div>
+                        
+                        <button id="modal-add-cart" class="w-full py-4 rounded-2xl font-bold transition-all duration-300 active:scale-95 shadow-lg flex items-center justify-center text-lg">
+                            <span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
